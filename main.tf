@@ -34,3 +34,24 @@ resource "aws_s3_bucket_acl" "example" {
   bucket = aws_s3_bucket.example.id
   acl    = "public-read"
 }
+
+## to create s3 object ; i,e index.html
+resource "aws_s3_object" "object" {
+  bucket       = aws_s3_bucket.example.id
+  key          = "index.html"
+  source       = "index.html"
+  acl          = "public-read"
+  content_type = "text/html"
+}
+
+## to enable static website hosting
+resource "aws_s3_bucket_website_configuration" "example" {
+  bucket = aws_s3_bucket.example.id
+  index_document {
+    suffix = "index.html"
+  }
+  error_document {
+    key = "error.html"
+  }
+  depends_on = [aws_s3_bucket_acl.example]
+}
